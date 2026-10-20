@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Para Dany</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@1,9..144,300;1,9..144,600&family=Bricolage+Grotesque:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme: dark;
+  --night:#14122b; --plum:#2a1b4a; --gold:#ffd479; --rose:#ff8fb1; --mist:#e9e4ff;
+  --serif:'Fraunces',Georgia,serif; --sans:'Bricolage Grotesque',system-ui,sans-serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-behavior:smooth;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:radial-gradient(120% 90% at 50% 0%,var(--plum) 0%,var(--night) 70%) fixed;color:var(--mist);font-family:var(--sans);font-weight:300;line-height:1.6;overflow-x:hidden}
+#sky{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
+main{position:relative;z-index:1}
+section{min-height:100svh;display:flex;flex-direction:column;justify-content:center;padding:4rem 1.5rem;max-width:42rem;margin:0 auto}
+.hero{align-items:flex-start}
+.hero p.small{margin:0 0 .5rem;color:var(--rose);font-size:1.05rem}
+h1{font-family:var(--serif);font-style:italic;font-weight:300;font-size:clamp(5rem,26vw,12rem);line-height:.9;margin:0;color:var(--gold);text-shadow:0 0 40px rgba(255,212,121,.35),0 0 90px rgba(255,143,177,.2)}
+.hero p.sub{max-width:30ch;font-size:1.2rem;margin:1.5rem 0 0}
+.hint{margin-top:3rem;font-size:.9rem;color:var(--rose);opacity:.8}
+h2{font-family:var(--serif);font-style:italic;font-weight:300;font-size:clamp(1.8rem,6vw,2.6rem);line-height:1.2;margin:0 0 1.5rem;color:var(--gold)}
+.letter p{font-size:1.15rem;max-width:34rem;margin:0 0 1.1rem}
+.reasons{list-style:none;padding:0;margin:0;display:grid;gap:1.4rem}
+.reasons li{border-left:2px solid var(--rose);padding-left:1rem;font-size:1.1rem}
+.reasons b{display:block;font-weight:600;color:var(--gold);font-family:var(--serif);font-style:italic;font-size:1.3rem}
+.ask{text-align:center;align-items:center}
+.ask .note{max-width:30rem;font-size:1.1rem;margin:0 0 2rem}
+button{font:inherit;font-weight:600;border:0;border-radius:999px;padding:.9rem 2rem;cursor:pointer;transition:transform .2s,box-shadow .2s}
+button:focus-visible{outline:3px solid var(--mist);outline-offset:3px}
+#read{background:var(--gold);color:var(--night);box-shadow:0 0 30px rgba(255,212,121,.35);font-size:1.1rem}
+#read:hover{transform:scale(1.05)}
+#answer{display:none;font-family:var(--serif);font-style:italic;font-size:clamp(1.6rem,6vw,2.4rem);color:var(--gold);max-width:24ch;margin:0}
+#answer span{display:block;font-family:var(--sans);font-style:normal;font-size:1rem;color:var(--mist);margin-top:1rem}
+.done h2.q,.done .note,.done #read{display:none}.done #answer{display:block}
+footer{position:relative;z-index:1;text-align:center;padding:2rem;font-size:.85rem;opacity:.6}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+</style>
+</head>
+<body>
+<canvas id="sky" aria-hidden="true"></canvas>
+<main>
+  <section class="hero">
+    <p class="small">Algo que te debo</p>
+    <h1>Dany</h1>
+    <p class="sub">Lo que hice, no estuvo bien</p>
+    <p class="hint">Desliza hacia abajo. Tómate tu tiempo.</p>
+  </section>
+
+  <section class="letter">
+    <h2>Lo que quiero decirte</h2>
+    <p>Lo que hice estuvo mal, y lo sé. No quiero darte excusas ni hacerlo parecer menos de lo que fue.</p>
+    <p>He pensado en cómo te pudo haber hecho sentir. Lamento haberte puesto en esa situación, porque tú no merecías eso.</p>
+    <p>Te lo escribo aquí porque quería hacerlo con calma y no a las prisas.</p>
+  </section>
+
+  <section>
+    <h2>Lo que voy a hacer distinto</h2>
+    <ul class="reasons">
+      <li><b>Hacerme responsable</b>Estuvo mal, sin darle vueltas y entiendo que te quieras tomar tu tiempo.</li>
+      <li><b>Escucharte</b>Lo que quieras decirme, lo quiero oír completo.</li>
+      <li><b>Cuidar tu confianza</b>Todo aquello que te moleste, merece ser platicado.</li>
+    </ul>
+  </section>
+
+  <section class="ask" id="ask">
+    <h2 class="q">Gracias por leerme hasta aquí</h2>
+    <p class="note">No espero que todo se arregle hoy. Si necesitas tiempo, lo entiendo. Y si quieres hablar, aquí estoy.</p>
+    <button id="read">Ya la leí</button>
+    <p id="answer">Gracias por darme la oportunidad de decírtelo.<span>Cuando quieras hablar, aquí estoy.</span></p>
+  </section>
+</main>
+<footer>Con respeto, Miguel</footer>
+
+<script>
+(function(){
+  var c=document.getElementById('sky'),x=c.getContext('2d'),W,H,dpr=Math.min(devicePixelRatio||1,2);
+  var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var mouse={x:-999,y:-999},flies=[];
+  function size(){W=innerWidth;H=innerHeight;c.width=W*dpr;c.height=H*dpr;x.setTransform(dpr,0,0,dpr,0,0)}
+  size();addEventListener('resize',size);
+  var N=W<600?30:52;
+  for(var i=0;i<N;i++)flies.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,r:Math.random()*1.8+.8,p:Math.random()*6.28,rose:Math.random()<.3});
+  function move(e){var t=e.touches?e.touches[0]:e;mouse.x=t.clientX;mouse.y=t.clientY}
+  addEventListener('pointermove',move);addEventListener('touchmove',move,{passive:true});
+  function draw(){
+    x.clearRect(0,0,W,H);
+    flies.forEach(function(f){
+      var dx=mouse.x-f.x,dy=mouse.y-f.y,d=Math.hypot(dx,dy);
+      if(d<220&&d>1){f.vx+=dx/d*.01;f.vy+=dy/d*.01}
+      f.vx*=.985;f.vy*=.985;f.vx+=(Math.random()-.5)*.02;f.vy+=(Math.random()-.5)*.02;
+      if(!reduce){f.x+=f.vx;f.y+=f.vy}
+      if(f.x<-10)f.x=W+10;if(f.x>W+10)f.x=-10;if(f.y<-10)f.y=H+10;if(f.y>H+10)f.y=-10;
+      f.p+=.03;var a=.4+.4*Math.sin(f.p),col=f.rose?'255,143,177':'255,212,121';
+      var g=x.createRadialGradient(f.x,f.y,0,f.x,f.y,f.r*7);
+      g.addColorStop(0,'rgba('+col+','+a+')');g.addColorStop(1,'rgba('+col+',0)');
+      x.fillStyle=g;x.beginPath();x.arc(f.x,f.y,f.r*7,0,6.28);x.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+  document.getElementById('read').addEventListener('click',function(){
+    document.getElementById('ask').classList.add('done');
+  });
+})();
+</script>
+</body>
+</html>
+
